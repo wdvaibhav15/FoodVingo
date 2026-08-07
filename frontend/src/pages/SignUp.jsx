@@ -1,12 +1,11 @@
+
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
-// Replace with your actual backend URL or env variable
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+import { SERVER_URL } from "../config/env.js";
 
 const SignUp = () => {
   const primaryColor = "#ff4d2d";
@@ -32,13 +31,15 @@ const SignUp = () => {
           email,
           mobile,
           password,
-          role,
+          role: role.toLowerCase(),
         },
         { withCredentials: true }
       );
+      console.log(result);
 
-      if (result.data.success) {
+      if (result.status === 201) {
         toast.success(result.data.message || "Account created successfully!");
+        navigate("/signin");
       }
     } catch (error) {
       console.error(error);
@@ -57,7 +58,6 @@ const SignUp = () => {
         className="bg-white rounded-lg w-full max-w-md p-8"
         style={{ border: `1px solid ${borderColor}` }}
       >
-        {/* Logo */}
         <h1
           className="text-2xl font-bold mb-2 text-center"
           style={{ color: primaryColor }}
@@ -65,14 +65,11 @@ const SignUp = () => {
           Sign Up to FoodVingo
         </h1>
 
-        {/* Heading */}
         <p className="text-gray-600 mb-6 text-center text-sm">
           Create your account to get started with delicious food deliveries
         </p>
 
-        {/* Form Container */}
         <form onSubmit={handleSignUp}>
-          {/* Full Name */}
           <div className="mb-3">
             <label
               htmlFor="fullname"
@@ -91,7 +88,6 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Email */}
           <div className="mb-3">
             <label
               htmlFor="email"
@@ -110,7 +106,6 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Mobile Number */}
           <div className="mb-3">
             <label
               htmlFor="mobile"
@@ -129,7 +124,6 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Password */}
           <div className="mb-4">
             <label
               htmlFor="password"
@@ -157,12 +151,8 @@ const SignUp = () => {
             </div>
           </div>
 
-          {/* Select Role */}
           <div className="mb-5">
-            <label
-              htmlFor="role"
-              className="block text-center text-gray-700 font-medium mb-2 text-sm"
-            >
+            <label className="block text-center text-gray-700 font-medium mb-2 text-sm">
               Select Role
             </label>
             <div className="flex gap-2">
@@ -191,9 +181,7 @@ const SignUp = () => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
-            
             type="submit"
             className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
             style={{ backgroundColor: primaryColor }}
@@ -202,26 +190,22 @@ const SignUp = () => {
           </button>
         </form>
 
-        {/* Social Signups */}
         <div className="flex gap-3 mt-3">
           <button
             type="button"
             className="border border-gray-300 flex items-center justify-center font-bold cursor-pointer w-full px-2 py-2 rounded-lg text-black transition-all duration-300 gap-2 hover:bg-gray-100 text-sm"
           >
-            SignUp with
-            <FcGoogle className="text-xl" />
+            SignUp with <FcGoogle className="text-xl" />
           </button>
-          
+
           <button
             type="button"
             className="border border-gray-300 flex items-center justify-center font-bold cursor-pointer w-full px-2 py-2 rounded-lg text-black transition-all duration-300 gap-2 hover:bg-gray-100 text-sm"
           >
-            SignUp with
-            <FaFacebook className="text-[#1877F2] text-xl" />
+            SignUp with <FaFacebook className="text-[#1877F2] text-xl" />
           </button>
         </div>
 
-        {/* Footer Link */}
         <p className="mt-5 text-sm flex items-center justify-center text-gray-600">
           Already have an account?{" "}
           <Link to="/signin" className="text-[#ff4d2d] ml-2 font-semibold hover:underline">

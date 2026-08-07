@@ -1,12 +1,11 @@
+
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
-// Replace with your actual backend URL or env variable
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+import { SERVER_URL } from "../config/env.js";
 
 const SignIn = () => {
   const primaryColor = "#ff4d2d";
@@ -15,9 +14,7 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-
   const [email, setEmail] = useState("");
-  
   const [password, setPassword] = useState("");
 
   const handleSignIn = async (e) => {
@@ -26,20 +23,21 @@ const SignIn = () => {
       const result = await axios.post(
         `${SERVER_URL}/api/auth/signin`,
         {
-          email,
-          password
+          email: email.trim(),
+          password,
         },
         { withCredentials: true }
       );
-      console.log(result.data);
+      console.log(result);
 
-      if (result.data.success) {
-        toast.success(result.data.message || "Account created successfully!");
+      if (result.status === 200) {
+        toast.success(result.data.message || "Signed in successfully!");
+        navigate("/"); // Redirect to home or dashboard after signin
       }
     } catch (error) {
       console.error(error);
       const errorMsg =
-        error.response?.data?.message || "Failed to sign up. Please try again.";
+        error.response?.data?.message || "Failed to sign in. Please try again.";
       toast.error(errorMsg);
     }
   };
@@ -58,7 +56,7 @@ const SignIn = () => {
           className="text-2xl font-bold mb-2 text-center"
           style={{ color: primaryColor }}
         >
-          SignIn to FoodVingo
+          Sign In to FoodVingo
         </h1>
 
         {/* Heading */}
@@ -68,8 +66,6 @@ const SignIn = () => {
 
         {/* Form Container */}
         <form onSubmit={handleSignIn}>
-          
-
           {/* Email */}
           <div className="mb-3">
             <label
@@ -89,10 +85,8 @@ const SignIn = () => {
             />
           </div>
 
-          
-
           {/* Password */}
-          <div className="mb-4">
+          <div className="mb-2">
             <label
               htmlFor="password"
               className="block text-gray-700 font-medium mb-1 text-sm"
@@ -119,22 +113,21 @@ const SignIn = () => {
             </div>
           </div>
 
-          {/* forgot password */}
+          {/* Forgot Password */}
           <div
-           onClick={()=>navigate("/forgot-password")}
-           className="cursor-pointer mb-4 text-right text-[#ff4d2d] ">
+            onClick={() => navigate("/forgot-password")}
+            className="cursor-pointer mb-4 text-right text-sm text-[#ff4d2d] hover:underline"
+          >
             Forgot your password?
           </div>
-          
 
           {/* Submit Button */}
           <button
-            
             type="submit"
             className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
             style={{ backgroundColor: primaryColor }}
           >
-            Sign Up
+            Sign In
           </button>
         </form>
 
@@ -144,24 +137,25 @@ const SignIn = () => {
             type="button"
             className="border border-gray-300 flex items-center justify-center font-bold cursor-pointer w-full px-2 py-2 rounded-lg text-black transition-all duration-300 gap-2 hover:bg-gray-100 text-sm"
           >
-            SignIn with
-            <FcGoogle className="text-xl" />
+            SignIn with <FcGoogle className="text-xl" />
           </button>
-          
+
           <button
             type="button"
             className="border border-gray-300 flex items-center justify-center font-bold cursor-pointer w-full px-2 py-2 rounded-lg text-black transition-all duration-300 gap-2 hover:bg-gray-100 text-sm"
           >
-            SignIn with
-            <FaFacebook className="text-[#1877F2] text-xl" />
+            SignIn with <FaFacebook className="text-[#1877F2] text-xl" />
           </button>
         </div>
 
         {/* Footer Link */}
         <p className="mt-5 text-sm flex items-center justify-center text-gray-600">
           Create a new account?{" "}
-          <Link to="/signup" className="text-[#ff4d2d] ml-2 font-semibold hover:underline">
-            SignIn
+          <Link
+            to="/signup"
+            className="text-[#ff4d2d] ml-2 font-semibold hover:underline"
+          >
+            SignUp
           </Link>
         </p>
       </div>
