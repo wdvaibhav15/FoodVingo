@@ -193,9 +193,7 @@ const SignUp = () => {
 
           {/* Submit Button */}
           <button
-            onClick={() => {
-              navigate("/Landing_page");
-            }}
+            
             type="submit"
             className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
             style={{ backgroundColor: primaryColor }}

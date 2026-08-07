@@ -15,26 +15,23 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState("user");
 
-  
   const [email, setEmail] = useState("");
+  
   const [password, setPassword] = useState("");
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.get(
-        `${SERVER_URL}/api/auth/SignUp`,
+      const result = await axios.post(
+        `${SERVER_URL}/api/auth/signin`,
         {
-          
           email,
-          
-          password,
-          
+          password
         },
         { withCredentials: true }
       );
+      console.log(result.data);
 
       if (result.data.success) {
         toast.success(result.data.message || "Account created successfully!");
@@ -61,16 +58,17 @@ const SignIn = () => {
           className="text-2xl font-bold mb-2 text-center"
           style={{ color: primaryColor }}
         >
-          SignUp to FoodVingo
+          SignIn to FoodVingo
         </h1>
 
         {/* Heading */}
         <p className="text-gray-600 mb-6 text-center text-sm">
-          Create your account to get started with delicious food deliveries
+          Link your account to get started with delicious food deliveries
         </p>
 
         {/* Form Container */}
         <form onSubmit={handleSignIn}>
+          
 
           {/* Email */}
           <div className="mb-3">
@@ -91,6 +89,7 @@ const SignIn = () => {
             />
           </div>
 
+          
 
           {/* Password */}
           <div className="mb-4">
@@ -120,45 +119,17 @@ const SignIn = () => {
             </div>
           </div>
 
-          {/* Select Role */}
-          <div className="mb-5">
-            <label
-              htmlFor="role"
-              className="block text-center text-gray-700 font-medium mb-2 text-sm"
-            >
-              Select Role
-            </label>
-            <div className="flex gap-2">
-              {["user", "owner", "deliveryBoy"].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setRole(item)}
-                  className="cursor-pointer flex-1 border rounded-lg px-2 py-2 text-sm font-medium transition-colors capitalize"
-                  style={
-                    role === item
-                      ? {
-                          backgroundColor: primaryColor,
-                          color: "#fff",
-                          borderColor: primaryColor,
-                        }
-                      : {
-                          borderColor: primaryColor,
-                          color: primaryColor,
-                        }
-                  }
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+          {/* forgot password */}
+          <div
+           onClick={()=>navigate("/forgot-password")}
+           className="cursor-pointer mb-4 text-right text-[#ff4d2d] ">
+            Forgot your password?
           </div>
+          
 
           {/* Submit Button */}
           <button
-            onClick={() => {
-              navigate("/Landing_page");
-            }}
+            
             type="submit"
             className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
             style={{ backgroundColor: primaryColor }}
@@ -188,9 +159,9 @@ const SignIn = () => {
 
         {/* Footer Link */}
         <p className="mt-5 text-sm flex items-center justify-center text-gray-600">
-          Create an Account?{" "}
+          Create a new account?{" "}
           <Link to="/signup" className="text-[#ff4d2d] ml-2 font-semibold hover:underline">
-            SignUn
+            SignIn
           </Link>
         </p>
       </div>

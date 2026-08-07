@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import SignUp from "./pages/SignUp.jsx";
 import SignIn from "./pages/SignIn.jsx";
-import Landing_page from "./pages/Landing_page.jsx";
+import Forgot_password from "./pages/Forgot_password.jsx";
 
 
 export const serverUrl = "http://localhost:3000";
@@ -13,7 +13,7 @@ const App = () => {
 
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<SignIn />} />
-      <Route path="/landing_page" element={<Landing_page />} />
+      <Route path="/forgot-password" element={<Forgot_password />} />
 
       </Routes>
   );
