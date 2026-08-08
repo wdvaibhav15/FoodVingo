@@ -6,11 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../config/env.js";
+import { ClipLoader } from "react-spinners";
 
-//firebase Google authentication
+// firebase Google authentication
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebaseGoogle.js";
-
+import { set } from "mongoose";
 
 const SignUp = () => {
   const primaryColor = "#ff4d2d";
@@ -25,9 +26,15 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // Handle standard Sign Up
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(""); // Clear previous errors
+
     try {
       const result = await axios.post(
         `${SERVER_URL}/api/auth/signup`,
@@ -41,39 +48,68 @@ const SignUp = () => {
         { withCredentials: true }
       );
       console.log(result);
+      setError("");
+      setLoading(false);
 
       if (result.status === 201) {
         toast.success(result.data.message || "Account created successfully!");
         navigate("/signin");
       }
-    } catch (error) {
-      console.error(error);
-      const errorMsg =
-        error.response?.data?.message || "Failed to sign up. Please try again.";
-      toast.error(errorMsg);
+    } catch (err) {
+      console.error("SignUp Error:", err);
+      // Optional chaining prevents app crash if err.response is undefined
+      setError(
+        err.response?.data?.message || "Something went wrong. Please try again."
+      );
+      setLoading(false);
     }
   };
 
-
-// function for firebase Google authentication and then onClick in that button
+  // Handle Firebase Google Sign In
   const handleGoogleSignIn = async () => {
-    if(!mobile){
-      return alert("Mobile number required.");
+    setError(""); // Clear previous errors
+    
+
+    if (!mobile) {
+      return setError("Mobile number required.");
     }
-    if(mobile.length < 10){
-      return alert("Invalid mobile number.");
+    if (mobile.length < 10) {
+      return setError("Invalid mobile number.");
     }
+
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      console.log("Google user:", result.user);
-      alert("Google Sign In Successful!");
-    } catch (error) {
-      console.log("Google Sign In Error:", error);
-      alert(error.message);
-    }
-  }
 
+      const { data } = await axios.post(
+        `${SERVER_URL}/api/auth/google-auth`,
+        {
+          fullName: result.user.displayName,
+          email: result.user.email,
+          mobile,
+          role,
+        },
+        { withCredentials: true }
+      );
+      console.log(data);
+      
+      toast.success(data.message || "Signed up successfully!");
+      navigate("/signin");
+    } catch (error) {
+      console.error("Google Auth Error:", error);
+
+      // Handle Firebase specific error codes gracefully
+      if (error.code === "auth/popup-closed-by-user") {
+        setError("Google sign-in popup was closed.");
+      } else {
+        setError(
+          error.response?.data?.message ||
+            error.message ||
+            "Google Authentication failed."
+        );
+      }
+    }
+  };
 
   return (
     <div
@@ -208,12 +244,22 @@ const SignUp = () => {
           </div>
 
           <button
+            
             type="submit"
             className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
             style={{ backgroundColor: primaryColor }}
+            disabled={loading}
           >
-            Sign Up
+            {loading ? <ClipLoader size={20} color="white" /> : "Sign Up"}
+            
           </button>
+
+          
+          {error && (
+            <p className="text-red-500 text-center text-sm mt-2 font-medium">
+              *{error}
+            </p>
+          )}
         </form>
 
         <div className="flex gap-3 mt-3">
@@ -235,7 +281,10 @@ const SignUp = () => {
 
         <p className="mt-5 text-sm flex items-center justify-center text-gray-600">
           Already have an account?{" "}
-          <Link to="/signin" className="text-[#ff4d2d] ml-2 font-semibold hover:underline">
+          <Link
+            to="/signin"
+            className="text-[#ff4d2d] ml-2 font-semibold hover:underline"
+          >
             SignIn
           </Link>
         </p>

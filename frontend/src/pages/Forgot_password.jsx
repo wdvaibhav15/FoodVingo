@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../config/env.js";
-
+import {} from "react-spinners";
 const Forgot_password = () => {
   const primaryColor = "#ff4d2d";
   const navigate = useNavigate();
@@ -15,9 +15,12 @@ const Forgot_password = () => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const result = await axios.post(
         `${SERVER_URL}/api/auth/send-otp`,
@@ -26,17 +29,18 @@ const Forgot_password = () => {
       );
       console.log(result);
       toast.success(result.data.message || "OTP sent successfully!");
+      setError("");
       setStep(2);
+      setLoading(false);
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error.response?.data?.message || "Failed to send OTP";
-      toast.error(errorMessage);
+      setError(error.response?.data?.message || "OTP sending failed");
+      setLoading(false);
     }
   };
 
   const handleOtpVarification = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const result = await axios.post(
         `${SERVER_URL}/api/auth/verify-otp`,
@@ -45,15 +49,18 @@ const Forgot_password = () => {
       );
       console.log(result);
       toast.success(result.data.message || "OTP verified!");
+      setError("");
       setStep(3);
+      setloading(false);
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "OTP verification failed");
+      setError(error.response?.data?.message || "OTP verification failed");
+      setLoading(false);
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (newPassword !== confirmPassword) {
       return toast.error("Passwords do not match");
     }
@@ -63,12 +70,14 @@ const Forgot_password = () => {
         { email: email.trim(), newPassword },
         { withCredentials: true }
       );
+      setError("");
       console.log(result);
+      setLoading(false);
       toast.success(result.data.message || "Password reset successfully!");
       navigate("/signin");
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Password reset failed");
+      setError(error.response?.data?.message || "Password reset failed");
+      setLoading(false);
     }
   };
 
@@ -109,15 +118,21 @@ const Forgot_password = () => {
                 required
                 placeholder="Enter your email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm"
+                required
               />
             </div>
             <button
               type="submit"
               className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
               style={{ backgroundColor: primaryColor }}
+              disabled={loading}
             >
-              Send OTP
+              {loading ? <Spinner size={20} color="white" /> : "Send OTP"}
             </button>
+            {error 
+            && 
+            <p className="text-red-500 mt-2">{error}</p>
+            }
           </form>
         )}
 
@@ -135,15 +150,21 @@ const Forgot_password = () => {
                 required
                 placeholder="Enter OTP"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm"
+                required
               />
             </div>
             <button
               type="submit"
               className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
               style={{ backgroundColor: primaryColor }}
+              disabled={loading}
             >
-              Verify OTP
+              {loading ? <Spinner size={20} color="white" /> : "Verify OTP"}
             </button>
+            {error 
+            && 
+            <p className="text-red-500 mt-2">{error}</p>
+            }
           </form>
         )}
 
@@ -164,6 +185,7 @@ const Forgot_password = () => {
                 required
                 placeholder="Enter New Password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm"
+                required
               />
             </div>
 
@@ -181,6 +203,7 @@ const Forgot_password = () => {
                 required
                 placeholder="Confirm Password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm"
+                required
               />
             </div>
 
@@ -188,9 +211,14 @@ const Forgot_password = () => {
               type="submit"
               className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
               style={{ backgroundColor: primaryColor }}
+              disabled={loading}
             >
-              Reset Password
+              {loading ? <Spinner size={20} color="white" /> : "Reset Password"}
             </button>
+            {error 
+            && 
+            <p className="text-red-500 mt-2">{error}</p>
+            }
           </form>
         )}
       </div>

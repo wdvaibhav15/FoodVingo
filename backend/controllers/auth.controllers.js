@@ -1,189 +1,10 @@
-// import User from "../models/user.model.js";
-// import bcrypt from "bcryptjs";
-// import genToken from "../utils/token.js";
-// import { sendOtpMail } from "../utils/mail.js";
-
-// export const signUp = async (req, res) => {
-//   try {
-//     // Data came from frontend signUp form
-//     const { fullName, email, password, mobile, role } = req.body;
-
-//     // Check if user already exists
-//     const user = await User.findOne({ email });
-//     if (user) {
-//       return res.status(400).json({ message: "User already exists" });
-//     }
-
-//     // Check password length
-//     if (password.length < 6) {
-//       return res.status(400).json({ message: "Password must be at least 6 characters" });
-//     }
-
-//     // Check mobile number
-//     if (mobile.length < 10) {
-//       return res.status(400).json({ message: "Please enter a valid mobile number" });
-//     }
-
-//     // Hash password
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     // Create new user
-//     const newUser = await User.create({
-//       fullName,
-//       email,
-//       password: hashedPassword, // FIXED: hashedPassword (Capital P)
-//       mobile,
-//       role,
-//     });
-
-//     // Create token
-//     const token = await genToken(newUser._id); // FIXED: newUser (Capital U)
-
-//     res.cookie("token", token, {
-//       secure: false,
-//       sameSite: "strict",
-//       maxAge: 1000 * 60 * 60 * 24 * 7,
-//       httpOnly: true,
-//     });
-
-//     return res.status(201).json({ 
-//       user: newUser, // FIXED: return newUser instead of user
-//       message: "User created successfully" 
-//     });
-
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ message: "Something went wrong" });
-//   }
-// };
-
-// export const signIn = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     // Check if user exists
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({ message: "Credentials don't match" });
-//     }
-
-//     // Check password
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Credentials don't match" });
-//     }
-
-//     // Create token
-//     const token = await genToken(user._id);
-
-//     res.cookie("token", token, {
-//       secure: false,
-//       sameSite: "strict",
-//       maxAge: 1000 * 60 * 60 * 24 * 7,
-//       httpOnly: true,
-//     });
-
-//     return res.status(200).json({ user, message: "Signed in successfully" });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ message: "SignIn failed" });
-//   }
-// };
-
-// export const signOut = async (req, res) => {
-//   try {
-//     res.clearCookie("token");
-//     return res.status(200).json({ message: "Logged out successfully" });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ message: "SignOut failed" });
-//   }
-// };
-
-
-// //  send generated otp
-// export const sendOtp = async (req, res) => {
-//   try {
-//     const { email } = req.body; // fron frontend
-
-//     // Check if user exists
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({ message: "User not found" });
-//     }
-//     // generate random otp in string form
-//     const otp = Math.floor(1000 + Math.random() * 9000).toString();
-//     user.resetOtp = otp;
-//     user.otpExpires = Date.now() + 5*60*1000; // 5 minutes
-//     user.isOtpVerified = false;
-//     await user.save();
-
-//     // send otp to user
-//     await sendOtpMail(email, otp);// email comes from body of frontend
-//     return res.status(200).json({ message: "Otp sent successfully" });
-//   } catch (error) {
-//     res.status(500).json(`sendOtp failed ${error}`);
-//   }
-// };
-
-// // confirm sended otp to varify
-// export const varifyOtp = async (req, res) => {
-//   try {
-//     // otp from frontend
-//     const { email, otp } = req.body;
-//     const user = await User.findOne({ email });
-//     // invalid email
-//     if (!user) {
-//       return res.status(400).json({ message: "Something went wrong" });
-//     }
-
-//     // invalid otp { otp by user != otp from db }
-//     if (user.resetOtp != otp) {
-//       return res.status(400).json({ message: "Something went wrong" });
-//     }
-
-//     // otp expired
-//     if (user.otpExpires < Date.now()) {
-//       return res.status(400).json({ message: "OTP expired/Invalid" });
-//     }
-
-//     // valid otp
-//     user.isOtpVerified = true;
-//     user.resetOtp = undefined;
-//     user.otpExpires = undefined;
-//     await user.save();
-//     return res.status(200).json({ message: "OTP verified successfully" });
-//   } catch (error) {
-//     return res.status(500).json({ message: "Something went wrong" });
-//   }
-// }
-
-// // reset password
-// export const resetPassword = async (req, res) => {
-//   try {
-//     // from frontend body
-//     const { email, newPassword } = req.body;
-//     const user = await User.findOne({ email });
-//     if (!user || !user.isOtpVerified) {
-//       return res.status(400).json({ message: "Something went wrong" });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(newPassword, 10);
-//     user.password = hashedPassword;
-//     user.isOtpVerified = false;
-//     await user.save();
-//     return res.status(200).json({ message: "Password reset successfully" });
-//   } catch (error) {
-//     return res.status(500).json({ message: "Something went wrong" });
-//   }
-// }
 
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import genToken from "../utils/token.js";
 import { sendOtpMail } from "../utils/mail.js";
 
-// 1. Sign Up
+// controller for user Sign Up
 export const signUp = async (req, res) => {
   try {
     const { fullName, email, password, mobile, role } = req.body;
@@ -230,7 +51,7 @@ export const signUp = async (req, res) => {
   }
 };
 
-// 2. Sign In
+// controller for user Sign In
 export const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -261,7 +82,7 @@ export const signIn = async (req, res) => {
   }
 };
 
-// 3. Sign Out
+//  controller for user Sign Out
 export const signOut = async (req, res) => {
   try {
     res.clearCookie("token");
@@ -272,7 +93,7 @@ export const signOut = async (req, res) => {
   }
 };
 
-// 4. Send OTP
+// controller for Send OTP
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -296,36 +117,8 @@ export const sendOtp = async (req, res) => {
   }
 };
 
-// 5. Verify OTP
-// export const verifyOtp = async (req, res) => {
-//   try {
-//     const { email, otp } = req.body;
-//     const user = await User.findOne({ email });
+// controller for Verify OTP
 
-//     if (!user) {
-//       return res.status(400).json({ message: "User not found" });
-//     }
-
-//     if (user.resetOtp !== otp) {
-//       return res.status(400).json({ message: "Invalid OTP" });
-//     }
-
-//     if (user.otpExpires < Date.now()) {
-//       return res.status(400).json({ message: "OTP has expired" });
-//     }
-
-//     user.isOtpVerified = true;
-//     user.resetOtp = undefined;
-//     user.otpExpires = undefined;
-//     await user.save();
-
-//     return res.status(200).json({ message: "OTP verified successfully" });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "OTP verification failed" });
-//   }
-// };
-// Verify OTP Controller Fix
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -363,7 +156,7 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
-// 6. Reset Password
+// controller for Reset Password
 export const resetPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
@@ -382,5 +175,63 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Reset password failed" });
+  }
+};
+
+// controller for Google authentication
+// export const googleAuthentication = async (req, res) => {
+//   try {
+//     const {fullName, email, mobile, role} = req.body;
+//     let user = await User.findOne({email});
+//     if(!user){
+//       user = await User.create({
+//         fullName,
+//         email,
+//         mobile,
+//         role
+//       });
+//     }
+//     const token = await genToken(user._id);
+//     res.cookie("token", token, {
+//       secure: false,
+//       sameSite: "strict",
+//       maxAge: 10 * 60 * 1000,
+//       httpOnly: true,
+//     });
+//     return res.status(200).json({ user, message: "Signed in successfully" });
+//   } catch (error) {
+//     return res.status(500).json({ message: "Google authentication failed" });
+//   }
+// };
+// controller for Google authentication
+export const googleAuthentication = async (req, res) => {
+  try {
+    const { fullName, email, mobile, role } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullName,
+        email,
+        mobile,
+        role: role ? role.toLowerCase() : "user",
+        authProvider: "google", // Tells Mongoose to skip password validation
+      });
+    }
+
+    const token = await genToken(user._id);
+
+    res.cookie("token", token, {
+      secure: false, // Change to true in production when using HTTPS
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days (matches your signUp/signIn cookie duration)
+      httpOnly: true,
+    });
+
+    return res.status(200).json({ user, message: "Signed in successfully" });
+  } catch (error) {
+    console.error("Google Auth Error:", error); // Crucial for debugging server terminal logs
+    return res.status(500).json({ message: "Google authentication failed" });
   }
 };

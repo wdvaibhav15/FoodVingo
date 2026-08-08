@@ -7,6 +7,11 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../config/env.js";
 
+//firebase Google authentication
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebaseGoogle.js";
+import { ClipLoader } from "react-spinners";
+
 const SignIn = () => {
   const primaryColor = "#ff4d2d";
   const bgColor = "#fff9f6";
@@ -16,9 +21,13 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(""); // Clear previous errors
     try {
       const result = await axios.post(
         `${SERVER_URL}/api/auth/signin`,
@@ -29,18 +38,54 @@ const SignIn = () => {
         { withCredentials: true }
       );
       console.log(result);
+      setError("");
+      setLoading(false);
 
       if (result.status === 200) {
         toast.success(result.data.message || "Signed in successfully!");
         navigate("/"); // Redirect to home or dashboard after signin
       }
     } catch (error) {
-      console.error(error);
-      const errorMsg =
-        error.response?.data?.message || "Failed to sign in. Please try again.";
-      toast.error(errorMsg);
+       setError(
+        error.response?.data?.message || "Something went wrong. Please try again."
+      );
+      setLoading(false);
     }
   };
+
+  // function for firebase Google authentication and then onClick in that button
+  const handleGoogleSignIn = async () => {
+     setError(""); // Clear previous errors
+      // console.log(result.user.displayName, result.user.email);
+      // alert("Google Sign In Successful!");
+
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+      
+        const {data} = await axios.post(`${SERVER_URL}/api/auth/google-auth`,{
+          
+          email: result.user.email,
+        },{withCredentials: true});
+        console.log(data);
+        toast.success(data.message || "Signed up successfully!");
+        navigate("/signin");
+      } catch (error) {
+      console.error("Google Auth Error:", error);
+
+      // Handle Firebase specific error codes gracefully
+      if (error.code === "auth/popup-closed-by-user") {
+        setError("Google sign-in popup was closed.");
+      } else {
+        setError(
+          error.response?.data?.message ||
+            error.message ||
+            "Google Authentication failed."
+        );
+      }
+    }
+    
+  }
 
   return (
     <div
@@ -82,6 +127,7 @@ const SignIn = () => {
               required
               placeholder="Enter your email"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm"
+              required
             />
           </div>
 
@@ -102,6 +148,7 @@ const SignIn = () => {
                 required
                 placeholder="Enter your password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm pr-10"
+                required
               />
               <button
                 type="button"
@@ -123,17 +170,27 @@ const SignIn = () => {
 
           {/* Submit Button */}
           <button
+            
             type="submit"
             className="font-bold cursor-pointer w-full px-3 py-2.5 rounded-lg text-white transition-all duration-300 hover:bg-[#e64323]"
             style={{ backgroundColor: primaryColor }}
+            disabled={loading}
           >
-            Sign In
+            {loading ? <ClipLoader size={20} color="white" /> : "Sign Up"}
+            
           </button>
+
+          {error && (
+            <p className="text-red-500 text-center text-sm mt-2 font-medium">
+              *{error}
+            </p>
+          )}
         </form>
 
         {/* Social SignIns */}
         <div className="flex gap-3 mt-3">
           <button
+            onClick={handleGoogleSignIn}
             type="button"
             className="border border-gray-300 flex items-center justify-center font-bold cursor-pointer w-full px-2 py-2 rounded-lg text-black transition-all duration-300 gap-2 hover:bg-gray-100 text-sm"
           >
