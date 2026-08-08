@@ -7,6 +7,11 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../config/env.js";
 
+//firebase Google authentication
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebaseGoogle.js";
+
+
 const SignUp = () => {
   const primaryColor = "#ff4d2d";
   const bgColor = "#fff9f6";
@@ -48,6 +53,27 @@ const SignUp = () => {
       toast.error(errorMsg);
     }
   };
+
+
+// function for firebase Google authentication and then onClick in that button
+  const handleGoogleSignIn = async () => {
+    if(!mobile){
+      return alert("Mobile number required.");
+    }
+    if(mobile.length < 10){
+      return alert("Invalid mobile number.");
+    }
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log("Google user:", result.user);
+      alert("Google Sign In Successful!");
+    } catch (error) {
+      console.log("Google Sign In Error:", error);
+      alert(error.message);
+    }
+  }
+
 
   return (
     <div
@@ -192,6 +218,7 @@ const SignUp = () => {
 
         <div className="flex gap-3 mt-3">
           <button
+            onClick={handleGoogleSignIn}
             type="button"
             className="border border-gray-300 flex items-center justify-center font-bold cursor-pointer w-full px-2 py-2 rounded-lg text-black transition-all duration-300 gap-2 hover:bg-gray-100 text-sm"
           >
