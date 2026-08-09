@@ -11,7 +11,9 @@ import { ClipLoader } from "react-spinners";
 // firebase Google authentication
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebaseGoogle.js";
-import { set } from "mongoose";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice.js";
+
 
 const SignUp = () => {
   const primaryColor = "#ff4d2d";
@@ -28,7 +30,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   // Handle standard Sign Up
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -47,7 +49,7 @@ const SignUp = () => {
         },
         { withCredentials: true }
       );
-      console.log(result);
+      dispatch(setUserData(result.data));
       setError("");
       setLoading(false);
 
@@ -91,7 +93,7 @@ const SignUp = () => {
         },
         { withCredentials: true }
       );
-      console.log(data);
+      dispatch(setUserData(data));
       
       toast.success(data.message || "Signed up successfully!");
       navigate("/signin");

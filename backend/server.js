@@ -5,6 +5,7 @@ import connectDB from "./config/db.js"
 import cookieParser from "cookie-parser"
 import authRouter from "./routes/auth.routes.js"
 import cors from "cors"
+import userRouter from "./routes/user.routes.js"
 
 
 const app = express()
@@ -20,6 +21,7 @@ app.use(cookieParser())
 
 
 app.use("/api/auth", authRouter)
+app.use("/api/user", userRouter)
 
 app.use("/", (req, res) => {
     res.send("Server is running")

@@ -178,31 +178,40 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+
 // controller for Google authentication
 // export const googleAuthentication = async (req, res) => {
 //   try {
-//     const {fullName, email, mobile, role} = req.body;
-//     let user = await User.findOne({email});
-//     if(!user){
+//     const { fullName, email, mobile, role } = req.body;
+
+//     let user = await User.findOne({ email });
+
+//     if (!user) {
 //       user = await User.create({
 //         fullName,
 //         email,
 //         mobile,
-//         role
+//         role: role ? role.toLowerCase() : "user",
+//         authProvider: "google", // Tells Mongoose to skip password validation
 //       });
 //     }
+
 //     const token = await genToken(user._id);
+
 //     res.cookie("token", token, {
-//       secure: false,
+//       secure: false, // Change to true in production when using HTTPS
 //       sameSite: "strict",
-//       maxAge: 10 * 60 * 1000,
+//       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days (matches your signUp/signIn cookie duration)
 //       httpOnly: true,
 //     });
+
 //     return res.status(200).json({ user, message: "Signed in successfully" });
 //   } catch (error) {
+//     console.error("Google Auth Error:", error); // Crucial for debugging server terminal logs
 //     return res.status(500).json({ message: "Google authentication failed" });
 //   }
 // };
+
 // controller for Google authentication
 export const googleAuthentication = async (req, res) => {
   try {
@@ -211,27 +220,34 @@ export const googleAuthentication = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
+      // 🛑 Validate mobile number for NEW Google users
+      if (!mobile || mobile.length < 10) {
+        return res.status(400).json({ 
+          message: "A valid mobile number is required to complete signup" 
+        });
+      }
+
       user = await User.create({
         fullName,
         email,
         mobile,
         role: role ? role.toLowerCase() : "user",
-        authProvider: "google", // Tells Mongoose to skip password validation
+        authProvider: "google",
       });
     }
 
     const token = await genToken(user._id);
 
     res.cookie("token", token, {
-      secure: false, // Change to true in production when using HTTPS
+      secure: false, // Set to true in production with HTTPS
       sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days (matches your signUp/signIn cookie duration)
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       httpOnly: true,
     });
 
     return res.status(200).json({ user, message: "Signed in successfully" });
   } catch (error) {
-    console.error("Google Auth Error:", error); // Crucial for debugging server terminal logs
+    console.error("Google Auth Error:", error);
     return res.status(500).json({ message: "Google authentication failed" });
   }
 };
