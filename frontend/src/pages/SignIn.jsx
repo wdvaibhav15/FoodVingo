@@ -39,7 +39,7 @@ const SignIn = () => {
         },
         { withCredentials: true }
       );
-      dispatch(setUserData(result.data));
+      dispatch(setUserData(result.data.user));
       setError("");
       setLoading(false);
 
