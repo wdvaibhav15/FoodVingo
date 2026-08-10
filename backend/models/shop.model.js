@@ -1,0 +1,17 @@
+import mongoose from "mongoose";
+
+const shopSchema = new mongoose.Schema(
+    {
+        name: { type: String, required: true },
+        image: { type: String },
+        owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        address: { type: String, required: true },
+        itrms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item",required: true }],
+    },
+    { timestamps: true }
+);
+
+const Shop = mongoose.model("Shop", shopSchema);
+export default Shop;
