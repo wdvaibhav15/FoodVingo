@@ -17,7 +17,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const { userData, city } = useSelector((state) => state.user);
-
+  const { myShopData } = useSelector((state) => state.owner);
   const handleLogout = async () => {
     console.log("Logout triggered! Current userData:", userData);
     try {
@@ -82,6 +82,7 @@ const Navbar = () => {
         {/* section for owner */}
         {userData?.role === "owner" ? (
           <>
+          {myShopData && 
           <div>
             <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
               <TiPlus size={20} className="bg-[#ff4d2d] text-white rounded-full" />
@@ -91,6 +92,8 @@ const Navbar = () => {
               <TiPlus size={20} className="bg-[#ff4d2d] text-white rounded-full" />
             </button>
           </div>
+          }
+          
 
           <div>
             <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">

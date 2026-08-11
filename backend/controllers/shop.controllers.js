@@ -41,3 +41,16 @@ export const createAndUpdateShop = async (req, res) => {
     }
 }
 
+
+// controller for getMyshop
+export const getMyShop = async (req, res) => {
+    try {
+        const shop = await Shop.findOne({owner:req.userId}).populate("owner items")
+        if(!shop){
+            return null
+        }
+        return res.status(200).json({message:"Shop found successfully",shop})
+    } catch (error) {
+        return res.status(500).json({message:`Get Shop error ${error}`})
+    }
+}
