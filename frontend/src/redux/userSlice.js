@@ -5,15 +5,25 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     userData: null,
-    city: null,
+    currentCity: null,
+    currentState: null,
+    currentAddress: null,
     loading: true, // Crucial for async auth checks
   },
   reducers: {
     setUserData: (state, action) => {
       state.userData = action.payload;
     },
-    setCity: (state, action) => {
-      state.city = action.payload;
+    setCurrentCity: (state, action) => {
+      state.currentCity = action.payload;
+    },
+
+    setCurrentState: (state, action) => {
+      state.currentState = action.payload;
+    },
+
+    setCurrentAddress: (state, action) => {
+      state.currentAddress = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -21,5 +31,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUserData, setCity, setLoading } = userSlice.actions;
+export const { setUserData, setCurrentCity, setCurrentState, setCurrentAddress, setLoading } = userSlice.actions;
 export default userSlice.reducer;

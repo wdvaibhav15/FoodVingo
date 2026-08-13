@@ -10,13 +10,12 @@ import { setUserData } from "../redux/userSlice";
 import { TiPlus } from "react-icons/ti";
 import { FaReceipt } from "react-icons/fa";
 
-
 const Navbar = () => {
   const [showInfo, setShowInfo] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const dispatch = useDispatch();
 
-  const { userData, city } = useSelector((state) => state.user);
+  const { userData, currentCity } = useSelector((state) => state.user);
   const { myShopData } = useSelector((state) => state.owner);
   const handleLogout = async () => {
     console.log("Logout triggered! Current userData:", userData);
@@ -49,7 +48,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2.5 min-w-[100px] max-w-[140px]">
             <FaLocationDot className="text-[#e03d24] text-xl shrink-0" />
             <span className="text-sm font-medium text-gray-700 truncate">
-              {city}
+              {currentCity}
             </span>
           </div>
 
@@ -82,53 +81,69 @@ const Navbar = () => {
         {/* section for owner */}
         {userData?.role === "owner" ? (
           <>
-          {myShopData && 
-          <div>
-            <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
-              <TiPlus size={20} className="bg-[#ff4d2d] text-white rounded-full" />
-              <span>Add Food Items</span>
-            </button>
-            <button className=" md:hidden flex items-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
-              <TiPlus size={20} className="bg-[#ff4d2d] text-white rounded-full" />
-            </button>
-          </div>
-          }
-          
+            {userData?.role === "owner" && (
+              <div>
+                <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
+                  <TiPlus
+                    size={20}
+                    className="bg-[#ff4d2d] text-white rounded-full"
+                  />
+                  <span>Add Food Items</span>
+                </button>
+                <button className=" md:hidden flex items-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
+                  <TiPlus
+                    size={20}
+                    className="bg-[#ff4d2d] text-white rounded-full"
+                  />
+                </button>
+              </div>
+            )}
 
-          <div>
-            <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
-              <FaReceipt size={20}  />
-              <span>Pending Orders</span>
-              <span className='relative -right-1 -top-4 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px]'>0</span>
-            </button>
-            <button className=" md:hidden flex items-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
-              <FaReceipt size={20}  />
-              <span className='relative -right-1 -top-4 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px]'>0</span>
-            </button>
-          </div>
+            <div>
+              <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
+                <FaReceipt size={20} />
+                <span>Pending Orders</span>
+                <span className="relative -right-1 -top-4 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px]">
+                  0
+                </span>
+              </button>
+              <button className=" md:hidden flex items-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
+                <FaReceipt size={20} />
+                <span className="relative -right-1 -top-4 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px]">
+                  0
+                </span>
+              </button>
+            </div>
           </>
-
-          
         ) : (
-          <div>
-            {/* Cart Button */}
-            <div className="relative cursor-pointer p-1 flex items-center">
-            <FaCartPlus className="text-[#e03d24] text-lg md:text-xl" />
-            <span className="absolute -top-1 -right-1.5 text-[10px] md:text-xs text-[#e03d24] font-semibold">
-              0
-            </span>
-          </div>
-          {/* My Orders */}
-        <button className="hidden md:block px-4 py-2 rounded-xl bg-[#feeae6] text-[#e03d24] text-xs md:text-sm font-semibold hover:bg-[#fddbd4] transition-colors">
-          My Orders
-        </button>
+          //   <div>
+          //     {/* Cart Button */}
+          //     <div className="relative cursor-pointer p-1 flex items-center">
+          //     <FaCartPlus className="text-[#e03d24] text-lg md:text-xl" />
+          //     <span className="absolute -top-1 -right-1.5 text-[10px] md:text-xs text-[#e03d24] font-semibold">
+          //       0
+          //     </span>
+          //   </div>
+          //   {/* My Orders */}
+          // <button className="hidden md:block px-4 py-2 rounded-xl bg-[#feeae6] text-[#e03d24] text-xs md:text-sm font-semibold hover:bg-[#fddbd4] transition-colors">
+          //   My Orders
+          // </button>
+          //   </div>
+          <div className="flex items-center gap-3 md:gap-5">
+            {/* 1. My Orders Button First */}
+            <button className="hidden md:block px-4 py-2 rounded-xl bg-[#feeae6] text-[#e03d24] text-xs md:text-sm font-semibold hover:bg-[#fddbd4] transition-colors cursor-pointer">
+              My Orders
+            </button>
+
+            {/* 2. Cart Icon with Badge in Top-Right Corner */}
+            <div className="relative cursor-pointer p-1.5 flex items-center justify-center">
+              <FaCartPlus className="text-[#e03d24] text-xl md:text-2xl" />
+              <span className="absolute -top-1 -right-2 bg-[#e03d24] text-white text-[10px] md:text-xs font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center leading-none">
+                0
+              </span>
+            </div>
           </div>
         )}
-
-        
-        
-
-        
 
         {/* Profile section */}
         <div
@@ -145,7 +160,7 @@ const Navbar = () => {
             <div className="flex items-center gap-1.5 min-w-[85px]">
               <FaLocationDot className="text-[#e03d24] text-sm shrink-0" />
               <span className="text-xs font-medium text-gray-700 truncate">
-                {city}
+                {currentCity}
               </span>
             </div>
             <div className="h-4 w-[1px] bg-gray-200"></div>

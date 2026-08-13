@@ -7,7 +7,7 @@ import upload from "../middlewares/multer.js";
 
 const shopRouter = express.Router();
 
-shopRouter.post("create-update", isAuth, upload.single("image"), createAndUpdateShop);
+shopRouter.post("/create-update", isAuth, upload.single("image"), createAndUpdateShop);
 shopRouter.get("/my-shop", isAuth, getMyShop);
 
 export default shopRouter;
