@@ -58,15 +58,51 @@ const CreateEditShop = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   // 1. Correct Image Selection Handler
+// const handleImage = (e) => {
+//   const file = e.target.files[0];
+//   if (file) {
+//     setBackendImage(file); // 👈 Sets raw file for Multer/Cloudinary
+//     setFrontendImage(URL.createObjectURL(file)); // 👈 Sets URL for browser preview
+//   }
+// };
+
+// // 2. Correct Form Submit Handler
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   try {
+//     const formData = new FormData();
+//     formData.append("name", name);
+//     formData.append("city", city);
+//     formData.append("state", state);
+//     formData.append("address", address);
+
+//     if (backendImage) {
+//       formData.append("image", backendImage);
+//     }
+
+//     const result = await axios.post(`${SERVER_URL}/api/shop/create-update`, formData, {
+//       withCredentials: true,
+//     });
+
+//     console.log("Response:", result.data);
+//     dispatch(setMyShopData(result.data.shop)); // 👈 Updated from result.data.user to result.data.shop
+//     navigate("/");
+//   } catch (error) {
+//     console.error("Error submitting shop form:", error.response?.data || error.message);
+//   }
+// };
+// CreateEditShop.jsx
+
+// 1. Correct Image Change Handler
 const handleImage = (e) => {
   const file = e.target.files[0];
   if (file) {
-    setBackendImage(file); // 👈 Sets raw file for Multer/Cloudinary
-    setFrontendImage(URL.createObjectURL(file)); // 👈 Sets URL for browser preview
+    setBackendImage(file); // 👈 Sets the File object
+    setFrontendImage(URL.createObjectURL(file)); // 👈 Sets preview URL
   }
 };
 
-// 2. Correct Form Submit Handler
+// 2. Form Submission
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
@@ -76,16 +112,20 @@ const handleSubmit = async (e) => {
     formData.append("state", state);
     formData.append("address", address);
 
+    // 💡 ONLY append image if a file was selected
     if (backendImage) {
-      formData.append("image", backendImage);
+      formData.append("image", backendImage); // 👈 Field name MUST be 'image'
     }
 
     const result = await axios.post(`${SERVER_URL}/api/shop/create-update`, formData, {
       withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data", // 👈 Ensure header is set
+      },
     });
 
     console.log("Response:", result.data);
-    dispatch(setMyShopData(result.data.shop)); // 👈 Updated from result.data.user to result.data.shop
+    dispatch(setMyShopData(result.data.shop));
     navigate("/");
   } catch (error) {
     console.error("Error submitting shop form:", error.response?.data || error.message);
