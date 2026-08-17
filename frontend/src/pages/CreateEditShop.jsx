@@ -7,6 +7,8 @@ import axios from "axios";
 import { SERVER_URL } from "../config/env";
 import { setMyShopData } from "../redux/ownerSlice";
 
+import { ClipLoader } from "react-spinners";
+
 const CreateEditShop = () => {
   const navigate = useNavigate();
   
@@ -28,7 +30,7 @@ const CreateEditShop = () => {
   const [state, setState] = useState(myShopData?.state || currentState || "");
   const [frontendImage, setFrontendImage] = useState(myShopData?.image || null);
   const [backendImage, setBackendImage] = useState(null);
-  
+  const [loading, setLoading] = useState(false);
 
   // const handleSubmit = async (e) => {
   //     e.preventDefault();
@@ -71,6 +73,7 @@ const handleImage = (e) => {
 // 2. Form Submission
 const handleSubmit = async (e) => {
   e.preventDefault();
+  setLoading(true);
   try {
     const formData = new FormData();
     formData.append("name", name);
@@ -92,9 +95,11 @@ const handleSubmit = async (e) => {
 
     console.log("Response:", result.data);
     dispatch(setMyShopData(result.data.shop));
+    setLoading(false);
     navigate("/");
   } catch (error) {
     console.error("Error submitting shop form:", error.response?.data || error.message);
+    setLoading(false);
   }
 };
 
@@ -234,12 +239,19 @@ const handleSubmit = async (e) => {
           </div>
 
           {/* Dynamic Submit Button Label using Ternary Operator */}
-          <button
-            type="submit"
-            className="w-full bg-[#ff4d2d] hover:bg-[#e03d24] text-white font-semibold py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 mt-2 cursor-pointer active:scale-[0.99]"
-          >
-            {myShopData ? "Save Changes" : "Add Shop"}
-          </button>
+         <button
+  type="submit"
+  disabled={loading}
+  className="w-full bg-[#ff4d2d] hover:bg-[#e03d24] text-white font-semibold py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 mt-2 cursor-pointer active:scale-[0.99] flex justify-center items-center disabled:opacity-60"
+>
+  {loading ? (
+    <ClipLoader size={20} color="#fff" />
+  ) : myShopData ? (
+    "Save Changes"
+  ) : (
+    "Add Shop"
+  )}
+</button>
         </form>
       </div>
     </div>

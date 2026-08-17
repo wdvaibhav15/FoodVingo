@@ -9,11 +9,13 @@ import { SERVER_URL } from "../config/env";
 import { setUserData } from "../redux/userSlice";
 import { TiPlus } from "react-icons/ti";
 import { FaReceipt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [showInfo, setShowInfo] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { userData, currentCity } = useSelector((state) => state.user);
   const { myShopData } = useSelector((state) => state.owner);
@@ -83,7 +85,9 @@ const Navbar = () => {
           <>
             {userData?.role === "owner" && (
               <div>
-                <button className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
+                <button 
+                onClick={()=>navigate("/add-items")}
+                className="hidden md:flex items-center gap-1 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
                   <TiPlus
                     size={20}
                     className="bg-[#ff4d2d] text-white rounded-full"
@@ -92,6 +96,7 @@ const Navbar = () => {
                 </button>
                 <button className=" md:hidden flex items-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-semibold">
                   <TiPlus
+                    onClick={()=>navigate("/add-items")}
                     size={20}
                     className="bg-[#ff4d2d] text-white rounded-full"
                   />
@@ -116,19 +121,7 @@ const Navbar = () => {
             </div>
           </>
         ) : (
-          //   <div>
-          //     {/* Cart Button */}
-          //     <div className="relative cursor-pointer p-1 flex items-center">
-          //     <FaCartPlus className="text-[#e03d24] text-lg md:text-xl" />
-          //     <span className="absolute -top-1 -right-1.5 text-[10px] md:text-xs text-[#e03d24] font-semibold">
-          //       0
-          //     </span>
-          //   </div>
-          //   {/* My Orders */}
-          // <button className="hidden md:block px-4 py-2 rounded-xl bg-[#feeae6] text-[#e03d24] text-xs md:text-sm font-semibold hover:bg-[#fddbd4] transition-colors">
-          //   My Orders
-          // </button>
-          //   </div>
+          
           <div className="flex items-center gap-3 md:gap-5">
             {/* 1. My Orders Button First */}
             <button className="hidden md:block px-4 py-2 rounded-xl bg-[#feeae6] text-[#e03d24] text-xs md:text-sm font-semibold hover:bg-[#fddbd4] transition-colors cursor-pointer">

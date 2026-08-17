@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
 import { FaUtensils, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import OwnerItemCard from "./OwnerItemCard";
 
 const Ownerdashboard = () => {
   const navigate = useNavigate();
@@ -111,6 +112,14 @@ const Ownerdashboard = () => {
           )}
         </div>
       )}
+
+      {myShopData?.items?.length > 0 && 
+      <div className="flex flex-col items-center w-full max-w-3xl">
+        {myShopData.items.map((item,index) => (
+          <OwnerItemCard key={index} data={item} />
+        ))}
+      </div>
+      }
     </div>
   );
 };
