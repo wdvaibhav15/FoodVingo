@@ -40,6 +40,7 @@ import Home from "./pages/Home.jsx";
 import useGetCity from "./hooks/useGetCity.jsx";
 import useGetMyShop from "./hooks/useGetMyShop.jsx";
 import CreateEditShop from "./pages/CreateEditShop.jsx";
+import AddItems from "./pages/AddItems.jsx";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -82,6 +83,8 @@ const App = () => {
       <Route path="*" element={<Navigate to={userData ? "/" : "/signin"} />} />
 
       <Route path="/create-edit-shop" element={userData ? <CreateEditShop /> : <Navigate to={userData ? "/" : "/signin"} />} />
+
+      <Route path="/add-items" element={userData ? <AddItems /> : <Navigate to={userData ? "/" : "/signin"} />} />
     </Routes>
   );
 };

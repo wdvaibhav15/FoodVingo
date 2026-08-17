@@ -39,7 +39,7 @@ export const createAndUpdateShop = async (req, res) => {
       const updateData = { name, city, state, address };
       if (image) updateData.image = image;
 
-      shop = await Shop.findByIdAndUpdate(shop._id, updateData, { new: true }).populate("owner");
+      shop = await Shop.findByIdAndUpdate(shop._id, updateData, { new: true }).populate("owner itrms");
 
       return res.status(200).json({ message: "Shop updated successfully", shop });
     }

@@ -1,65 +1,73 @@
+
 // import { v2 as cloudinary } from "cloudinary";
 // import fs from "fs";
-// const uploadOnCloudinary = async (file) => {
-//   cloudinary.config({
-//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET,
-//   });
+
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME?.trim(),
+//   api_key: process.env.CLOUDINARY_API_KEY?.trim(),
+//   api_secret: process.env.CLOUDINARY_API_SECRET?.trim(),
+//   secure: true,
+// });
+
+// const uploadOnCloudinary = async (filePath) => {
+//   if (!filePath) {
+//     throw new Error("Image file path was not provided");
+//   }
 
 //   try {
-//     const result = await cloudinary.uploader.upload(file, {
-//       resource_type: "auto",
+//     const result = await cloudinary.uploader.upload(filePath, {
+//       resource_type: "image",
+//       folder: "FoodVingo/shops",
 //     });
-//     // for deleting file from local storage using fs function
-//     fs.unlinkSync(file);
+
 //     return result.secure_url;
 //   } catch (error) {
-//     console.error("Error uploading image:", error);
-//     return null;
+//     console.error("Cloudinary upload failed:", {
+//       message: error.message,
+//       httpCode: error.http_code,
+//     });
+
+//     // Important: null return mat karo
+//     throw new Error(`Cloudinary upload failed: ${error.message}`);
+//   } finally {
+//     if (fs.existsSync(filePath)) {
+//       fs.unlinkSync(filePath);
+//     }
 //   }
 // };
 
 // export default uploadOnCloudinary;
+// utils/cloudinary.js
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import dotenv from "dotenv";
 
-// Ensure environment variables are loaded
-dotenv.config();
+const uploadOnCloudinary = async (filePath) => {
+  if (!filePath) {
+    throw new Error("Image file path was not provided");
+  }
 
-// Configure Cloudinary globally
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+  // Ensure Cloudinary is configured with loaded environment variables
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME?.trim(),
+    api_key: process.env.CLOUDINARY_API_KEY?.trim(),
+    api_secret: process.env.CLOUDINARY_API_SECRET?.trim(),
+    secure: true,
+  });
 
-const uploadOnCloudinary = async (file) => {
   try {
-    if (!file) return null;
-
-    // Upload to Cloudinary
-    const result = await cloudinary.uploader.upload(file, {
-      resource_type: "auto",
+    const result = await cloudinary.uploader.upload(filePath, {
+      resource_type: "image",
+      folder: "FoodVingo/shops",
     });
 
-    // Delete local temporary file from public/ folder after success
-    if (fs.existsSync(file)) {
-      fs.unlinkSync(file);
-    }
-
-    // Returns the string URL directly
     return result.secure_url;
   } catch (error) {
-    console.error("❌ Cloudinary Upload Error:", error);
-
-    // Delete local temporary file if upload fails
-    if (file && fs.existsSync(file)) {
-      fs.unlinkSync(file);
+    console.error("Cloudinary upload failed:", error);
+    throw new Error(`Cloudinary upload failed: ${error.message}`);
+  } finally {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
     }
-
-    return null;
   }
 };
 

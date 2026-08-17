@@ -57,48 +57,14 @@ const CreateEditShop = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  // 1. Correct Image Selection Handler
-// const handleImage = (e) => {
-//   const file = e.target.files[0];
-//   if (file) {
-//     setBackendImage(file); // 👈 Sets raw file for Multer/Cloudinary
-//     setFrontendImage(URL.createObjectURL(file)); // 👈 Sets URL for browser preview
-//   }
-// };
-
-// // 2. Correct Form Submit Handler
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-//   try {
-//     const formData = new FormData();
-//     formData.append("name", name);
-//     formData.append("city", city);
-//     formData.append("state", state);
-//     formData.append("address", address);
-
-//     if (backendImage) {
-//       formData.append("image", backendImage);
-//     }
-
-//     const result = await axios.post(`${SERVER_URL}/api/shop/create-update`, formData, {
-//       withCredentials: true,
-//     });
-
-//     console.log("Response:", result.data);
-//     dispatch(setMyShopData(result.data.shop)); // 👈 Updated from result.data.user to result.data.shop
-//     navigate("/");
-//   } catch (error) {
-//     console.error("Error submitting shop form:", error.response?.data || error.message);
-//   }
-// };
-// CreateEditShop.jsx
+  
 
 // 1. Correct Image Change Handler
 const handleImage = (e) => {
   const file = e.target.files[0];
   if (file) {
-    setBackendImage(file); // 👈 Sets the File object
-    setFrontendImage(URL.createObjectURL(file)); // 👈 Sets preview URL
+    setBackendImage(file);
+    setFrontendImage(URL.createObjectURL(file)); 
   }
 };
 
@@ -120,7 +86,7 @@ const handleSubmit = async (e) => {
     const result = await axios.post(`${SERVER_URL}/api/shop/create-update`, formData, {
       withCredentials: true,
       headers: {
-        "Content-Type": "multipart/form-data", // 👈 Ensure header is set
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -131,15 +97,6 @@ const handleSubmit = async (e) => {
     console.error("Error submitting shop form:", error.response?.data || error.message);
   }
 };
-
-  // Handle Image File Selection & Preview
-  // const handleImage = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setFrontendImage(file);
-  //     setFrontendImage(URL.createObjectURL(file));
-  //   }
-  // };
 
   useEffect(() => {
     if (myShopData) {
