@@ -10,6 +10,9 @@ const Ownerdashboard = () => {
   const navigate = useNavigate();
   const { myShopData } = useSelector((state) => state.owner);
 
+  
+
+
   return (
     <div className="w-full min-h-screen bg-[#fff9f6] flex flex-col items-center pb-12">
       <Navbar />
@@ -63,18 +66,7 @@ const Ownerdashboard = () => {
                 className="w-full h-40 sm:h-44 object-cover"
               />
             ) : (
-              <div className="w-full h-40 sm:h-44 bg-orange-50 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-orange-200">
-                <FaUtensils className="text-orange-300 w-7 h-7" />
-                <p className="text-xs font-medium text-gray-400">
-                  No Shop Image Uploaded
-                </p>
-                <button
-                  onClick={() => navigate("/create-edit-shop")}
-                  className="px-3 py-1 bg-[#ff4d2d] text-white text-xs font-semibold rounded-md shadow hover:bg-[#e03d24] transition-all cursor-pointer"
-                >
-                  Upload Image
-                </button>
-              </div>
+              ""
             )}
 
             {/* Shop Details */}

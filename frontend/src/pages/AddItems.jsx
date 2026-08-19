@@ -52,8 +52,8 @@ const AddItems = () => {
         { withCredentials: true }
       );
       dispatch(setMyShopData(result.data));
-      navigate("/");
       setLoading(false);
+      navigate("/");
 
     } catch (error) {
       console.log("Server Error Response:", error.response?.data);

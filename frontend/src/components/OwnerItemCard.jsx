@@ -1,10 +1,28 @@
+import axios from 'axios';
 import React from 'react'
 import { FaEdit } from "react-icons/fa";
 import { IoTrashBinSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import { serverUrl } from '../App';
+import { useDispatch } from 'react-redux';
+import { setMyShopData } from '../redux/ownerSlice';
 
 function OwnerItemCard({ data }) {
+
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handleDetele = async ()=>{
+       try {
+         const result = await axios.get(`${serverUrl}/api/item/delete/${data._id}`,
+          {withCredentials: true}
+        );
+        dispatch(setMyShopData(result.data));
+        navigate("/");
+       } catch (error) {
+        console.log(error)
+       }
+    } 
+
   return (
     <div className="flex mt-4 bg-white rounded-lg shadow-md overflow-hidden border border-[#ff4d2d] w-full h-34 max-w-2xl">
       <div className="w-1/3 flex-shrink-0 bg-gray-50">
@@ -39,6 +57,7 @@ function OwnerItemCard({ data }) {
                 </div>
 
                 <div 
+                onClick={handleDetele}
                 className="p-2 rounded-full hover:bg-[#ff4d2d]/10 text-[#ff4d2d] cursor-pointer">
                 <IoTrashBinSharp size={20} />
                 </div>
