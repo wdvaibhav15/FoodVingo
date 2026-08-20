@@ -1,1 +1,9 @@
 @import "tailwindcss";
+*{
+  scrollbar-width: none;  /* firefor */
+   -ms-overflow-style: none;
+ }
+ ::-webkit-scrollbar,
+ ::-webkit-scrollbar {
+    display: none; /* chrome safari opera */
+ }
