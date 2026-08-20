@@ -4,7 +4,6 @@ import Shop from "../models/shop.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
 // Controller for add item
-
 export const addItem = async (req, res) => {
   try {
     const { name, category, price, foodType } = req.body;
@@ -87,8 +86,57 @@ export const editItems = async (req, res) => {
   }
 };
 
-// controller for to get a perticular items
 
+// delete the food items
+// export const deleteItem = async (req, res) => {
+//   try {
+//     const itemId = req.params.itemId;
+//     const deletedItem = await Item.findByIdAndDelete(itemId);
+//     if (!deletedItem) {
+//       return res.status(404).json({ message: "Item not found" });
+//     }
+//     const shop = await Shop.findOne({ owner: req.userId });
+//     shop.items = shop.items.filter((item) => item !== item._id);
+//     await shop.save();
+//     await shop.populate({
+//       path: "items",
+//       options:{sort: {updatedAt: -1}}
+//     });
+//     return res.status(200).json({ message: "Item deleted successfully", shop });
+//   } catch (error) {
+//     return res.status(500).json({ message: `Delete item error: ${error.message}` });
+//   }
+// };
+export const deleteItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const deletedItem = await Item.findByIdAndDelete(itemId);
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const shop = await Shop.findOne({ owner: req.userId });
+    if (!shop) {
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    // FIX: compare each item id to the itemId string
+    shop.items = shop.items.filter((id) => id.toString() !== itemId.toString());
+    await shop.save();
+
+    await shop.populate({
+      path: "items",
+      options: { sort: { updatedAt: -1 } },
+    });
+
+    return res.status(200).json({ message: "Item deleted successfully", shop });
+  } catch (error) {
+    return res.status(500).json({ message: `Delete item error: ${error.message}` });
+  }
+};
+
+
+// controller for to get a perticular items
 export const getItemById = async (req, res) => {
   try {
     const itemId = req.params.itemId;
@@ -99,27 +147,5 @@ export const getItemById = async (req, res) => {
     return res.status(200).json({ message: "Item found successfully", item });
   } catch (error) {
     return res.status(500).json({ message: `Get item error: ${error.message}` });
-  }
-};
-
-// delete the food items
-
-export const deleteItem = async (req, res) => {
-  try {
-    const itemId = req.params.itemId;
-    const deletedItem = await Item.findByIdAndDelete(itemId);
-    if (!deletedItem) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-    const shop = await Shop.findOne({ owner: req.userId });
-    shop.items = shop.items.filter((item) => item !== item._id);
-    await shop.save();
-    await shop.populate({
-      path: "items",
-      options:{sort: {updatedAt: -1}}
-    });
-    return res.status(200).json({ message: "Item deleted successfully", shop });
-  } catch (error) {
-    return res.status(500).json({ message: `Delete item error: ${error.message}` });
   }
 };

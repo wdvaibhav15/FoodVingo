@@ -11,18 +11,32 @@ function OwnerItemCard({ data }) {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const handleDetele = async ()=>{
-       try {
-         const result = await axios.get(`${serverUrl}/api/item/delete/${data._id}`,
-          {withCredentials: true}
-        );
-        dispatch(setMyShopData(result.data));
-        navigate("/");
-       } catch (error) {
-        console.log(error)
-       }
-    } 
+    // const handleDetele = async ()=>{
+    //    try {
+    //      const result = await axios.get(`${serverUrl}/api/item/delete/${data._id}`,
+    //       {withCredentials: true}
+    //     );
+    //     dispatch(setMyShopData(response.data.shop));
+    //     navigate("/");
+    //    } catch (error) {
+    //     console.log(error)
+    //    }
+    // } 
+  const handleDelete = async () => {
+  try {
+    // FIX: variable matched to response
+    const response = await axios.get(
+      `${serverUrl}/api/item/delete/${data._id}`,
+      { withCredentials: true }
+    );
 
+    if (response.data.shop) {
+      dispatch(setMyShopData(response.data.shop));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
   return (
     <div className="flex mt-4 bg-white rounded-lg shadow-md overflow-hidden border border-[#ff4d2d] w-full h-34 max-w-2xl">
       <div className="w-1/3 flex-shrink-0 bg-gray-50">
@@ -57,7 +71,7 @@ function OwnerItemCard({ data }) {
                 </div>
 
                 <div 
-                onClick={handleDetele}
+                onClick={handleDelete}
                 className="p-2 rounded-full hover:bg-[#ff4d2d]/10 text-[#ff4d2d] cursor-pointer">
                 <IoTrashBinSharp size={20} />
                 </div>

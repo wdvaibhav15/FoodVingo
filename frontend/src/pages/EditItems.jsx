@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { FaUtensils } from "react-icons/fa";
@@ -7,7 +6,6 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setMyShopData } from "../redux/ownerSlice";
 import { serverUrl } from "../App";
-
 
 const EditItems = () => {
   const navigate = useNavigate();
@@ -37,7 +35,7 @@ const EditItems = () => {
     "Others",
   ];
 
-  // Optimized Single useEffect: Fetches once and populates form
+  // Fetch Item Details
   useEffect(() => {
     let isMounted = true;
 
@@ -57,7 +55,6 @@ const EditItems = () => {
           setFoodType(item.foodType || "Veg");
           setFrontendImage(item.image || "");
         }
-        console.log(data)
       } catch (error) {
         console.error("Fetch Item Error:", error.response?.data || error.message);
       }
@@ -68,7 +65,7 @@ const EditItems = () => {
     }
 
     return () => {
-      isMounted = false; // Prevents state updates if component unmounts
+      isMounted = false;
     };
   }, [itemId]);
 
@@ -116,78 +113,85 @@ const EditItems = () => {
   };
 
   return (
-    <div className="flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen">
+    <div className="flex justify-center flex-col items-center p-4 bg-gradient-to-br from-orange-50 relative to-white min-h-screen">
+      {/* Back Button */}
       <div
-        className="absolute top-[20px] left-[20px] z-[10] cursor-pointer"
+        className="absolute top-4 left-4 z-10 cursor-pointer"
         onClick={() => navigate("/")}
       >
-        <IoIosArrowRoundBack size={35} className="text-[#ff4d2d]" />
+        <IoIosArrowRoundBack size={32} className="text-[#ff4d2d]" />
       </div>
 
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-orange-100">
-        <div className="flex flex-col items-center mb-6">
-          <div className="bg-orange-100 p-4 rounded-full mb-4">
-            <FaUtensils className="text-[#ff4d2d] w-14 h-14" />
+      {/* Main Form Container (Compacted) */}
+      <div className="w-full max-w-sm bg-white shadow-lg rounded-xl p-5 sm:p-6 border border-orange-100">
+        <div className="flex flex-col items-center mb-4">
+          <div className="bg-orange-100 p-3 rounded-full mb-2">
+            <FaUtensils className="text-[#ff4d2d] w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-extrabold text-gray-900">Edit Food</h1>
+          <h1 className="text-xl font-bold text-gray-900">Edit Food</h1>
         </div>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        {/* Form Fields */}
+        <form className="space-y-3.5" onSubmit={handleSubmit}>
+          {/* Food Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Name
             </label>
             <input
               type="text"
               placeholder="Enter Food Name"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500"
+              className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
               onChange={(e) => setName(e.target.value)}
               value={name}
               required
             />
           </div>
 
+          {/* Food Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Food Image
             </label>
             <input
               type="file"
               accept="image/*"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
               onChange={handleImage}
             />
             {frontendImage && (
-              <div className="mt-4">
+              <div className="mt-2">
                 <img
                   src={frontendImage}
                   alt="Item Preview"
-                  className="w-full h-48 object-cover rounded-lg border"
+                  className="w-full h-32 object-cover rounded-md border"
                 />
               </div>
             )}
           </div>
 
+          {/* Item Price (Numbers only, hidden spinners) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Price
             </label>
             <input
               type="number"
-              placeholder="0.00"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="0"
+              className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               onChange={(e) => setPrice(e.target.value)}
               value={price}
               required
             />
           </div>
 
+          {/* Item Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Select Category
             </label>
             <select
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
               onChange={(e) => setCategory(e.target.value)}
               value={category}
               required
@@ -201,12 +205,13 @@ const EditItems = () => {
             </select>
           </div>
 
+          {/* Food Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Select Food Type
             </label>
             <select
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
               onChange={(e) => setFoodType(e.target.value)}
               value={foodType}
               required
@@ -216,10 +221,11 @@ const EditItems = () => {
             </select>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#ff4d2d] text-white py-2.5 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200 cursor-pointer disabled:opacity-60"
+            className="w-full bg-[#ff4d2d] text-white py-2 rounded-md font-semibold text-sm shadow hover:bg-orange-600 transition-all duration-200 cursor-pointer disabled:opacity-60 mt-2"
           >
             {loading ? "Saving Changes..." : "Save Changes"}
           </button>
