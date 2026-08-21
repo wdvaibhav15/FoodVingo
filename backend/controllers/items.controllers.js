@@ -1,4 +1,4 @@
-import item from "../models/item.model.js";
+
 import Item from "../models/item.model.js";
 import Shop from "../models/shop.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
@@ -147,5 +147,39 @@ export const getItemById = async (req, res) => {
     return res.status(200).json({ message: "Item found successfully", item });
   } catch (error) {
     return res.status(500).json({ message: `Get item error: ${error.message}` });
+  }
+};
+
+// controller for get item by city
+export const getItemsByCity = async (req, res) => {
+  try {
+    const { city } = req.params;
+    if (!city) {
+      return res.status(400).json({ message: "City is required" });
+    }
+
+    // 1. Find all shops in this city
+    const shops = await Shop.find({
+      city: { $regex: new RegExp(`^${city}$`, "i") },
+    });
+
+    if (!shops || shops.length === 0) {
+      return res.status(200).json({ message: "No shops found", items: [] });
+    }
+
+    // 2. Extract shop IDs
+    const allShopId = shops.map((shop) => shop._id);
+
+    // 3. Find all items belonging to these shops
+    const items = await Item.find({ shop: { $in: allShopId } });
+
+    return res.status(200).json({
+      message: "Items found successfully",
+      items: items || [],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `Get items by city error: ${error.message}`,
+    });
   }
 };

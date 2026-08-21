@@ -10,6 +10,7 @@ const userSlice = createSlice({
     currentAddress: null,
     loading: true, // Crucial for async auth checks
     shopInMyCity: null,
+    itemsInMyCity: null,
   },
   reducers: {
     setUserData: (state, action) => {
@@ -26,14 +27,20 @@ const userSlice = createSlice({
     setCurrentAddress: (state, action) => {
       state.currentAddress = action.payload;
     },
+
     setShopInMyCity: (state, action) => {
       state.shopInMyCity = action.payload;
     },
+
+    setItemsInMyCity: (state, action) => {
+      state.itemsInMyCity = action.payload;
+    },
+
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
   },
 });
 
-export const { setUserData, setCurrentCity, setCurrentState, setCurrentAddress, setShopInMyCity, setLoading } = userSlice.actions;
+export const { setUserData, setCurrentCity, setCurrentState, setCurrentAddress, setShopInMyCity, setItemsInMyCity, setLoading } = userSlice.actions;
 export default userSlice.reducer;
