@@ -9,6 +9,7 @@ const userSlice = createSlice({
     currentState: null,
     currentAddress: null,
     loading: true, // Crucial for async auth checks
+    shopInMyCity: null,
   },
   reducers: {
     setUserData: (state, action) => {
@@ -25,11 +26,14 @@ const userSlice = createSlice({
     setCurrentAddress: (state, action) => {
       state.currentAddress = action.payload;
     },
+    setShopInMyCity: (state, action) => {
+      state.shopInMyCity = action.payload;
+    },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
   },
 });
 
-export const { setUserData, setCurrentCity, setCurrentState, setCurrentAddress, setLoading } = userSlice.actions;
+export const { setUserData, setCurrentCity, setCurrentState, setCurrentAddress, setShopInMyCity, setLoading } = userSlice.actions;
 export default userSlice.reducer;
