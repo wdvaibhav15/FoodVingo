@@ -5,9 +5,13 @@ import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
 import { CiCircleMinus } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../redux/userSlice";
 
 const FoodCard = ({ data }) => {
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const {cartItems} = useSelector(state => state.user);
   const renderStarts = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -95,8 +99,17 @@ const FoodCard = ({ data }) => {
 
             {/* Add to Cart */}
             <button
+              onClick={() => dispatch(addToCart({
+                id:data._id,
+                name:data.name,
+                price:data.price,
+                image:data.image,
+                shop:data.shop,
+                quantity,
+                foodType:data.foodType,
+              }))}
               type="button"
-              className="bg-[#ff4d2d] text-white px-3.5 py-1.5 rounded-full text-xs font-semibold hover:bg-[#e03d24] transition-all shadow-sm active:scale-95 ml-1"
+              className= {`${cartItems.some((item) => item.id === data._id) ? "bg-gray-800" : "bg-[#ff4d2d]" } text-white px-3.5 py-1.5 rounded-full text-xs font-semibold hover:bg-[#e03d24] transition-all shadow-sm active:scale-95 ml-1`}
             >
               Add Food
             </button>

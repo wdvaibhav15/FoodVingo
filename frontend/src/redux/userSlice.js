@@ -11,6 +11,7 @@ const userSlice = createSlice({
     loading: true, // Crucial for async auth checks
     shopInMyCity: null,
     itemsInMyCity: null,
+    cartItems: [],
   },
   reducers: {
     setUserData: (state, action) => {
@@ -35,6 +36,28 @@ const userSlice = createSlice({
     setItemsInMyCity: (state, action) => {
       state.itemsInMyCity = action.payload;
     },
+    addToCart:(state,action) =>{
+      const cartItem = action.payload;
+      const existingItem = state.cartItems.find(item => item.id === cartItem.id);
+      if(existingItem){
+        existingItem.quantity += cartItem.quantity;
+      }else{
+        state.cartItems.push(cartItem);
+      }
+    },
+
+    updateQuantity:(state,action) =>{
+      const { id, quantity } = action.payload;
+      const existingItem = state.cartItems.find(item => item.id === id);
+      if(existingItem){
+        existingItem.quantity = quantity;
+      }
+    },
+
+    removeCartItem:(state,action) => {
+      const id = action.payload;
+      state.cartItems = state.cartItems.filter(item => item.id !== id);
+    },
 
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -42,5 +65,16 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUserData, setCurrentCity, setCurrentState, setCurrentAddress, setShopInMyCity, setItemsInMyCity, setLoading } = userSlice.actions;
+export const { 
+  setUserData, 
+  setCurrentCity, 
+  setCurrentState, 
+  setCurrentAddress, 
+  setShopInMyCity, 
+  setItemsInMyCity,
+  addToCart,
+  updateQuantity, 
+  removeCartItem,
+  setLoading 
+} = userSlice.actions;
 export default userSlice.reducer;

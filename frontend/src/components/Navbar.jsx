@@ -17,7 +17,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { userData, currentCity } = useSelector((state) => state.user);
+  const { userData, currentCity, cartItems } = useSelector((state) => state.user);
   const { myShopData } = useSelector((state) => state.owner);
   const handleLogout = async () => {
     console.log("Logout triggered! Current userData:", userData);
@@ -130,9 +130,11 @@ const Navbar = () => {
 
             {/* 2. Cart Icon with Badge in Top-Right Corner */}
             <div className="relative cursor-pointer p-1.5 flex items-center justify-center">
-              <FaCartPlus className="text-[#e03d24] text-xl md:text-2xl" />
+              <FaCartPlus
+              onClick={()=> navigate("/my-cart")} 
+              className="text-[#e03d24] text-xl md:text-2xl" />
               <span className="absolute -top-1 -right-2 bg-[#e03d24] text-white text-[10px] md:text-xs font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center leading-none">
-                0
+                {cartItems.length}
               </span>
             </div>
           </div>
