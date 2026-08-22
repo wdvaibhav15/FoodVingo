@@ -94,7 +94,9 @@ const CartPage = () => {
               </span>
             </div>
             <div className="mt-4 flex justify-end">
-                <button className="bg-[#ff4d2d] text-white py-2 px-4 rounded-lg text-lg font-medium hover:bg-[#ff4d2d]/80 transition-all duration-300 cursor-pointer">
+                <button 
+                onClick={() => navigate("/checkout")}
+                className="bg-[#ff4d2d] text-white py-2 px-4 rounded-lg text-lg font-medium hover:bg-[#ff4d2d]/80 transition-all duration-300 cursor-pointer">
                   Proceed to Order
                   </button>
             </div>
