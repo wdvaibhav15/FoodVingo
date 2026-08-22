@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { SERVER_URL } from '../config/env';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentAddress, setCurrentCity, setCurrentState, setUserData } from '../redux/userSlice';
+import { setAddress, setLocation } from '../redux/mapSlice';
 
 
 const useGetCity = () => {
@@ -26,6 +27,7 @@ const useGetCity = () => {
           const latitude = position.coords.latitude; 
           const longitude = position.coords.longitude;
 
+          dispatch(setLocation({lat:latitude, long:longitude}));
           if (!latitude || !longitude) return;
 
           const result = await axios.get(
@@ -36,6 +38,7 @@ const useGetCity = () => {
           dispatch(setCurrentCity(result?.data?.results[0].city));
           dispatch(setCurrentState(result?.data?.results[0].state));
           dispatch(setCurrentAddress(result?.data?.results[0].formatted));
+          dispatch(setAddress(result?.data?.results[0].formatted));
           console.log(result?.data?.results[0].formatted);
           
 
